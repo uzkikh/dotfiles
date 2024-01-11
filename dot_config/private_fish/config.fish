@@ -8,7 +8,7 @@ op completion fish | source
 set -gx LEDGER_FILE /Users/ivan/hledger/main.journal
 
 # Set PATH
-set PATH $PATH ~/.emacs.d/bin
+set PATH ~/.emacs.d/bin ~/Library/Application\ Support/JetBrains/Toolbox/scripts $PATH
 
 # Set DOCKER envs for Colima
 set -gx DOCKER_HOST unix://$HOME/.colima/default/docker.sock
