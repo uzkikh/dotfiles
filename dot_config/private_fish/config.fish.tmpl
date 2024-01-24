@@ -9,10 +9,20 @@ end
 
 # Hledger settings
 set -gx LEDGER_FILE {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}hledger{{ .chezmoi.pathSeparator }}main.journal
+
+# pyenv configurations
+set -Ux PYENV_ROOT $HOME/.pyenv
+set -U fish_user_paths $PYENV_ROOT/bin $fish_user_paths
+pyenv init - | source
 {{- end }}
 
 # Set JAVA_HOME environment variable
+{{- if eq .chezmoi.config.data.machineName "mbp-personal" }}
+set -x JAVA_HOME $(/usr/libexec/java_home -v21)
+{{- end }}
+{{- if eq .chezmoi.config.data.machineName "epam-laptop" }}
 set -x JAVA_HOME $(/usr/libexec/java_home -v11)
+{{- end }}
 
 # Set PATH
 set PATH ~/.emacs.d/bin ~/Library/Application\ Support/JetBrains/Toolbox/scripts $PATH
