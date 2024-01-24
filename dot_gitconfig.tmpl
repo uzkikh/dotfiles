@@ -1,7 +1,8 @@
 [core]
 	excludesFile = {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}.gitignore
 	quotePath = false
-	autocrlf = input
+[push]
+    autoSetupRemote = true
 [user]
 	name = {{ .name }}
 	email = {{ .email }}
