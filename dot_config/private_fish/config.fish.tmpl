@@ -1,3 +1,6 @@
+# Disable fish greeting
+set -g fish_greeting
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
@@ -30,3 +33,8 @@ set PATH ~/.emacs.d/bin ~/Library/Application\ Support/JetBrains/Toolbox/scripts
 # Set DOCKER envs for Colima
 set -gx DOCKER_HOST unix://$HOME/.colima/default/docker.sock
 set -gx TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE /var/run/docker.sock
+
+# Add my custom functions to be autoloaded
+if test -d $__fish_config_dir/custom_functions.d
+  set -gp fish_function_path $__fish_config_dir/custom_functions.d
+end
