@@ -9,6 +9,7 @@ end
 
 # 1password integration
 {{ .chezmoi.config.onepassword.command }} completion fish | source
+set -x SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
 # Hledger settings
 set -gx LEDGER_FILE {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}hledger{{ .chezmoi.pathSeparator }}main.journal
