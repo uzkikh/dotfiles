@@ -1,9 +1,11 @@
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
 [core]
     excludesFile = {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}.gitignore
 [push]
     autoSetupRemote = true
-[user]
-    name = {{ .name }}
-    email = {{ .email }}
 [log]
     date = iso
+[branch]
+    sort = -committerdate
