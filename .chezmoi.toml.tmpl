@@ -1,0 +1,25 @@
+{{- $email := "" -}}
+{{- $machineName := "" -}}
+{{- $personal := false -}}
+
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $computerName := output "scutil" "--get" "ComputerName" | trim -}}
+{{-   if eq $computerName "Alpheratz" -}}
+{{-     $email = "ivan@uzkikh.com" -}}
+{{-     $machineName = "mbp-personal" -}}
+{{-     $personal = true -}}
+{{-   else if contains "EPES" $computerName -}}
+{{-     $email = "Ivan_Uzkikh@epam.com" -}}
+{{-     $machineName = "epam-laptop" -}}
+{{-     $personal = false -}}
+{{-   end -}}
+{{- end -}}
+
+[data]
+name = "Ivan Uzkikh"
+email = {{ $email | quote }}
+machineName = {{ $machineName | quote }}
+personal = {{ $personal }}
+
+[edit]
+command = "vim"
