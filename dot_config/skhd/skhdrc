@@ -4,10 +4,6 @@ alt - j : yabai -m window --focus south
 alt - k : yabai -m window --focus north
 alt - l : yabai -m window --focus east
 
-# Change focus between external displays (left and right)
-alt - s : yabai -m display --focus west
-alt - g : yabai -m display --focus east
-
 # Flip layout along y-axis
 shift + alt - y : yabai -m space --mirror y-axis
 
@@ -31,10 +27,6 @@ shift + alt - h : yabai -m window --swap west
 shift + alt - j : yabai -m window --swap south
 shift + alt - k : yabai -m window --swap north
 shift + alt - l : yabai -m window --swap east
-
-# Move window to display left and right
-shift + alt - s : yabai -m window --display west; yabai -m display --focus west;
-shift + alt - g : yabai -m window --display east; yabai -m display --focus east;
 
 # Move window to prev and next space
 shift + alt - p : yabai -m window --space prev;
@@ -66,6 +58,15 @@ alt - f : yabai -m window --toggle zoom-fullscreen
 
 # Toggle full screen mode
 alt - t : yabai -m window --toggle native-fullscreen
+
+# External displays
+# Change focus between external displays (left and right)
+alt - s : yabai -m display --focus west
+alt - g : yabai -m display --focus east
+
+# Move window to display left and right
+shift + alt - s : yabai -m window --display west; yabai -m display --focus west;
+shift + alt - g : yabai -m window --display east; yabai -m display --focus east;
 
 # Restart yabai service
 ctrl + alt + cmd - r : yabai --restart-service
