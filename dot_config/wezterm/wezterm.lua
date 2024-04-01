@@ -21,7 +21,7 @@ return {
             SplitHorizontal = { domain = "CurrentPaneDomain" }
         })
     }, {
-        key = "x",
+        key = "v",
         mods = "SHIFT|ALT",
         action = wezterm.action({
             SplitVertical = { domain = "CurrentPaneDomain" }
