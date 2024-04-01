@@ -20,6 +20,9 @@ set PATH ~/.emacs.d/bin ~/Library/Application\ Support/JetBrains/Toolbox/scripts
 set -gx DOCKER_HOST unix://$HOME/.colima/default/docker.sock
 set -gx TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE /var/run/docker.sock
 
+# Remap git_log hotkey to 'ctrl + opt + o' (patrickf1/fzf.fish plugin)
+fzf_configure_bindings --git_log=\e\cO
+
 {{/* Machine dependant settings */}}
 {{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
 # 1password integration
