@@ -1,0 +1,71 @@
+# Navigation between windows
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus south
+alt - k : yabai -m window --focus north
+alt - l : yabai -m window --focus east
+
+# Change focus between external displays (left and right)
+alt - s : yabai -m display --focus west
+alt - g : yabai -m display --focus east
+
+# Flip layout along y-axis
+shift + alt - y : yabai -m space --mirror y-axis
+
+# Flip layout along x-axis
+shift + alt - x : yabai -m space --mirror x-axis
+
+# Toggle window float
+shift + alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
+# Balance out tree of windows
+shift + alt - e : yabai -m space --balance
+
+# Moving windows and split
+ctrl + alt - h : yabai -m window --warp west
+ctrl + alt - j : yabai -m window --warp south
+ctrl + alt - k : yabai -m window --warp north
+ctrl + alt - l : yabai -m window --warp east
+
+# Swap windows
+shift + alt - h : yabai -m window --swap west
+shift + alt - j : yabai -m window --swap south
+shift + alt - k : yabai -m window --swap north
+shift + alt - l : yabai -m window --swap east
+
+# Move window to display left and right
+shift + alt - s : yabai -m window --display west; yabai -m display --focus west;
+shift + alt - g : yabai -m window --display east; yabai -m display --focus east;
+
+# Move window to prev and next space
+shift + alt - p : yabai -m window --space prev;
+shift + alt - n : yabai -m window --space next;
+
+# Move window to space #
+shift + alt - 1 : yabai -m window --space 1;
+shift + alt - 2 : yabai -m window --space 2;
+shift + alt - 3 : yabai -m window --space 3;
+shift + alt - 4 : yabai -m window --space 4;
+shift + alt - 5 : yabai -m window --space 5;
+shift + alt - 6 : yabai -m window --space 6;
+shift + alt - 7 : yabai -m window --space 7;
+shift + alt - 8 : yabai -m window --space 8;
+shift + alt - 9 : yabai -m window --space 9;
+
+# Resize windows
+ctrl + alt + shift - h : yabai -m window --resize left:-50:0; yabai -m window --resize right:-50:0
+ctrl + alt + shift - j : yabai -m window --resize bottom:0:50; yabai -m window --resize top:0:50
+ctrl + alt + shift - k : yabai -m window --resize top:0:-50; yabai -m window --resize bottom:0:-50
+ctrl + alt + shift - l : yabai -m window --resize right:50:0; yabai -m window --resize left:50:0
+
+# Rotate windows clockwise and anticlockwise
+alt - r : yabai -m space --rotate 270
+shift + alt - r : yabai -m space --rotate 90
+
+# Full screen
+alt - f : yabai -m window --toggle zoom-fullscreen
+
+# Toggle full screen mode
+alt - t : yabai -m window --toggle native-fullscreen
+
+# Restart yabai service
+ctrl + alt + cmd - r : yabai --restart-service
