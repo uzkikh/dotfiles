@@ -31,7 +31,7 @@ fzf_configure_bindings --git_log=\e\cO
 
 # Hledger settings
 set -gx LEDGER_FILE {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}hledger{{ .chezmoi.pathSeparator }}main.journal
-{{- end }}
+{{- end -}}
 
 {{- if eq .chezmoi.config.data.machineName "epam-laptop" -}}
 # NVM settings
