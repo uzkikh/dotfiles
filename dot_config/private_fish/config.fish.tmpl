@@ -5,28 +5,13 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
-{{- if eq .chezmoi.config.data.machineName "mbp-personal" }}
-
-# 1password integration
-{{ .chezmoi.config.onepassword.command }} completion fish | source
-#set -x SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-
-# Hledger settings
-set -gx LEDGER_FILE {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}hledger{{ .chezmoi.pathSeparator }}main.journal
-
 # pyenv configurations
 set -Ux PYENV_ROOT $HOME/.pyenv
-set -U fish_user_paths $PYENV_ROOT/bin $fish_user_paths
+fish_add_path $PYENV_ROOT/bin
 pyenv init - | source
-{{- end }}
 
 # Set JAVA_HOME environment variable
-{{- if eq .chezmoi.config.data.machineName "mbp-personal" }}
 set -x JAVA_HOME $(/usr/libexec/java_home -v21)
-{{- end }}
-{{- if eq .chezmoi.config.data.machineName "epam-laptop" }}
-set -x JAVA_HOME $(/usr/libexec/java_home -v11)
-{{- end }}
 
 # Set PATH
 set PATH ~/.emacs.d/bin ~/Library/Application\ Support/JetBrains/Toolbox/scripts $PATH
@@ -34,3 +19,18 @@ set PATH ~/.emacs.d/bin ~/Library/Application\ Support/JetBrains/Toolbox/scripts
 # Set DOCKER envs for Colima
 set -gx DOCKER_HOST unix://$HOME/.colima/default/docker.sock
 set -gx TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE /var/run/docker.sock
+
+{{/* Machine dependant settings */}}
+{{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
+# 1password integration
+{{ .chezmoi.config.onepassword.command }} completion fish | source
+#set -x SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+# Hledger settings
+set -gx LEDGER_FILE {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}hledger{{ .chezmoi.pathSeparator }}main.journal
+{{- end }}
+
+{{- if eq .chezmoi.config.data.machineName "epam-laptop" -}}
+# NVM settings
+set -gx NVM_DIR $HOME/.nvm
+{{- end -}}
