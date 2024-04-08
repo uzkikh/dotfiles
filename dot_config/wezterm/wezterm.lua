@@ -6,7 +6,7 @@ return {
     initial_rows = 40,
     initial_cols = 150,
 
--- Catpuccin themes
+-- Catppuccin themes
 -- color_scheme = "Catppuccin Mocha",
 -- color_scheme = "Catppuccin Macchiato",
 -- color_scheme = "Catppuccin Frappe",
