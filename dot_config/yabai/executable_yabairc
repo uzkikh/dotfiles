@@ -11,6 +11,7 @@ yabai -m config window_gap     8
 
 # Disable apps
 yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^1Password$" manage=off
 yabai -m rule --add app="^Music$" manage=off
 yabai -m rule --add app="^Podcasts$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off
