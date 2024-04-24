@@ -6,6 +6,8 @@ return {
     initial_rows = 40,
     initial_cols = 150,
 
+    window_decorations = "RESIZE",
+    hide_tab_bar_if_only_one_tab = true,
 -- Catppuccin themes
 -- color_scheme = "Catppuccin Mocha",
 -- color_scheme = "Catppuccin Macchiato",
