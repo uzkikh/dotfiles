@@ -1,3 +1,3 @@
 function llt
-    eza -l --group-directories-first -s extension -T $argv
+    eza --long --group-directories-first --sort extension --tree $argv
 end

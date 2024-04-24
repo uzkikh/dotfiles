@@ -1,3 +1,3 @@
 function lla
-    eza -la --group-directories-first -s extension $argv
+    eza --long --all --group-directories-first --sort extension $argv
 end
