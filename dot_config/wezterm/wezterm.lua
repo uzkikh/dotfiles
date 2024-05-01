@@ -8,34 +8,9 @@ return {
 
     window_decorations = "RESIZE",
     hide_tab_bar_if_only_one_tab = true,
--- Catppuccin themes
--- color_scheme = "Catppuccin Mocha",
--- color_scheme = "Catppuccin Macchiato",
--- color_scheme = "Catppuccin Frappe",
--- color_scheme = "Catppuccin Latte",
-
--- Gruvbox themes
--- color_scheme = "GruvboxDarkHard",
--- color_scheme = "Gruvbox (Gogh)",
--- color_scheme = "Gruvbox Dark (Gogh)",
--- color_scheme = "Gruvbox dark, hard (base16)",
--- color_scheme = "Gruvbox dark, medium (base16)",
--- color_scheme = "Gruvbox dark, pale (base16)",
--- color_scheme = "Gruvbox dark, soft (base16)",
--- color_scheme = "Gruvbox light, hard (base16)",
--- color_scheme = "Gruvbox light, medium (base16)",
--- color_scheme = "Gruvbox light, soft (base16)",
--- color_scheme = "Gruvbox Material (Gogh)",
-   color_scheme = "GruvboxDark",
--- color_scheme = "GruvboxDarkHard",
--- color_scheme = "GruvboxLight",
-
--- Monokai themes
--- color_scheme = "DimmedMonokai",
--- color_scheme = "Monokai (terminal.sexy)",
--- color_scheme = "Monokai Pro Ristretto (Gogh)",
--- color_scheme = "Monokai (dark) (terminal.sexy)",
--- color_scheme = "Monokai Remastered",
+    window_close_confirmation = 'NeverPrompt',
+    color_scheme = "Catppuccin Mocha",
+    -- window_background_opacity = 0.9,
 
     keys = {
         { key = "Enter", mods = "ALT", action = "DisableDefaultAssignment" }, {
