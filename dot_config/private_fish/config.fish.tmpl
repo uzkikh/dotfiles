@@ -23,7 +23,20 @@ set -gx TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE /var/run/docker.sock
 # Remap git_log hotkey to 'ctrl + opt + o' (patrickf1/fzf.fish plugin)
 fzf_configure_bindings --git_log=\e\cO
 
-{{/* Machine dependant settings */}}
+# NNN file manager settings
+set -x NNN_FIFO /tmp/nnn.fifo
+set -x NNN_PLUG p:preview-tui
+
+# BAT configuration
+set -x BAT_THEME 'Catppuccin Mocha'
+
+# fzf default options
+set fzf_fd_opts --hidden --max-depth 10
+
+# Enable zoxide
+zoxide init fish | source
+
+{{/* ---- Machine dependant settings ---- */}}
 {{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
 # 1password integration
 {{ .chezmoi.config.onepassword.command }} completion fish | source
