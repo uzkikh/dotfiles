@@ -1,11 +1,12 @@
 {
+    "vim_mode": false,
     "theme": "Catppuccin Mocha",
     "tab_size": 4,
     "telemetry": {
         "metrics": false,
         "diagnostics": false
     },
-    "buffer_font_size": 16,
+    "buffer_font_size": 17,
     "buffer_font_family": "Iosevka Nerd Font Mono",
     "preferred_line_length": 130,
     "soft_wrap": "preferred_line_length",
