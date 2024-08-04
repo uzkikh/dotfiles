@@ -1,5 +1,5 @@
 {
-    "vim_mode": false,
+    "vim_mode": true,
     "theme": "Catppuccin Mocha",
     "tab_size": 4,
     "telemetry": {
