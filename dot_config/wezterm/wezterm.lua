@@ -10,7 +10,7 @@ return {
     hide_tab_bar_if_only_one_tab = true,
     window_close_confirmation = 'NeverPrompt',
     color_scheme = "Catppuccin Mocha",
-    -- window_background_opacity = 0.9,
+    --window_background_opacity = 0.95,
 
     keys = {
         { key = "Enter", mods = "ALT", action = "DisableDefaultAssignment" }, {
