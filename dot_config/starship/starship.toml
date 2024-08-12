@@ -1,25 +1,27 @@
 add_newline = false
-palette = "catppuccin_mocha"
+palette = 'catppuccin_mocha'
 format = '$directory$character'
 right_format = '$all'
 
-[aws]
-disabled = true
-format = 'on [$symbol($profile )(\($region\) )(\[$duration\] )]($style)'
-style = 'bold blue'
-symbol = ' '
+[directory]
+disabled = false
+truncation_length = 4
+truncation_symbol = '../'
 
 [golang]
 disabled = false
 format = '[$symbol($version )]($style)'
 style = 'bold cyan'
-symbol = " "
+symbol = ' '
+
+[aws]
+disabled = true
 
 [time]
-disabled = false
+disabled = true
 
 [cmd_duration]
-disabled = false
+disabled = true
 
 # palette tables should be last in the config ⚓️
 [palettes.catppuccin_macchiato]
