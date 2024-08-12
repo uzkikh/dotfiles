@@ -23,30 +23,36 @@ set -gx TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE /var/run/docker.sock
 # Remap git_log hotkey to 'ctrl + opt + o' (patrickf1/fzf.fish plugin)
 fzf_configure_bindings --git_log=\e\cO
 
-# NNN file manager settings
-set -x NNN_FIFO /tmp/nnn.fifo
-set -x NNN_PLUG p:preview-tui
+# fzf default options
+set fzf_fd_opts --hidden --max-depth 10
 
 # BAT configuration
 set -x BAT_THEME 'Catppuccin Mocha'
 
-# fzf default options
-set fzf_fd_opts --hidden --max-depth 10
-
 # Enable zoxide
 zoxide init fish | source
 
-{{/* ---- Machine dependant settings ---- */}}
-{{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
 # 1password integration
 {{ .chezmoi.config.onepassword.command }} completion fish | source
 #set -x SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
+
+{{/* ---- Machine dependant settings begin ---- */}}
+{{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
 # Hledger settings
-set -gx LEDGER_FILE {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}hledger{{ .chezmoi.pathSeparator }}main.journal
+set -gx LEDGER_FILE $HOME/hledger/main.journal
 {{- end -}}
 
 {{- if eq .chezmoi.config.data.machineName "epam-laptop" -}}
 # NVM settings
 set -gx NVM_DIR $HOME/.nvm
-{{- end -}}
+
+# EPAM DIAL env variable
+set -gx DIAL_KEY {{ onepasswordRead "op://EPAM/q5gb2akldv2az7rm7c5ddo7xla/DIAL_KEY" }}
+{{- end }}
+{{/* ---- Machine dependant settings end ---- */}}
+
+
+# Enable starship prompt
+set -x STARSHIP_CONFIG $HOME/.config/starship/starship.toml
+starship init fish | source
