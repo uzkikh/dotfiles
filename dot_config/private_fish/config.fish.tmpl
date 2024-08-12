@@ -36,7 +36,6 @@ zoxide init fish | source
 {{ .chezmoi.config.onepassword.command }} completion fish | source
 #set -x SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
-
 {{/* ---- Machine dependant settings begin ---- */}}
 {{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
 # Hledger settings
@@ -49,9 +48,8 @@ set -gx NVM_DIR $HOME/.nvm
 
 # EPAM DIAL env variable
 set -gx DIAL_KEY {{ onepasswordRead "op://EPAM/q5gb2akldv2az7rm7c5ddo7xla/DIAL_KEY" }}
-{{- end }}
+{{- end -}}
 {{/* ---- Machine dependant settings end ---- */}}
-
 
 # Enable starship prompt
 set -x STARSHIP_CONFIG $HOME/.config/starship/starship.toml
