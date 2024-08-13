@@ -22,6 +22,7 @@ brew "eza"
 brew "fd"
 brew "ffmpegthumbnailer"
 brew "fish"
+brew "fisher"
 brew "fswatch"
 brew "fzf"
 brew "gh"
@@ -128,7 +129,7 @@ cask "synology-drive"
 cask "telegram"
 cask "telegram-desktop"
 cask "temurin"
-cask "temurin21"
+cask "temurin@21"
 cask "utm"
 cask "visual-studio-code"
 cask "visualvm"
@@ -139,6 +140,7 @@ cask "yubico-yubikey-manager"
 cask "zed"
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
+mas "AdGuard for Safari", id: 1440147259
 mas "Disk Speed Test", id: 425264550
 mas "GarageBand", id: 682658836
 mas "iMovie", id: 408981434

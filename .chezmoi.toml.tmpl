@@ -1,7 +1,6 @@
-{{- $email := "" -}}
-{{- $machineName := "" -}}
+{{- $email := "default@email.com" -}}
+{{- $machineName := "default-machine" -}}
 {{- $personal := false -}}
-{{- $epam := false -}}
 
 {{- if eq .chezmoi.os "darwin" -}}
 {{-   $computerName := output "scutil" "--get" "ComputerName" | trim -}}
@@ -9,12 +8,10 @@
 {{-     $email = "ivan@uzkikh.com" -}}
 {{-     $machineName = "mbp-personal" -}}
 {{-     $personal = true -}}
-{{-     $epam = false -}}
 {{-   else if contains "EPES" $computerName -}}
 {{-     $email = "Ivan_Uzkikh@epam.com" -}}
 {{-     $machineName = "epam-laptop" -}}
 {{-     $personal = false -}}
-{{-     $epam = true -}}
 {{-   end -}}
 {{- end -}}
 
@@ -23,7 +20,6 @@ name = "Ivan Uzkikh"
 email = {{ $email | quote }}
 machineName = {{ $machineName | quote }}
 personal = {{ $personal }}
-epam = {{ $epam }}
 
 [edit]
-command = "vim"
+command = "nvim"

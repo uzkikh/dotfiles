@@ -5,6 +5,9 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
+# Homebrew variables
+eval "$(/opt/homebrew/bin/brew shellenv fish)"
+
 # pyenv configurations
 set -Ux PYENV_ROOT $HOME/.pyenv
 fish_add_path $PYENV_ROOT/bin
@@ -37,12 +40,12 @@ zoxide init fish | source
 #set -x SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
 {{/* ---- Machine dependant settings begin ---- */}}
-{{- if eq .chezmoi.config.data.machineName "mbp-personal" -}}
+{{- if eq .machineName "mbp-personal" -}}
 # Hledger settings
 set -gx LEDGER_FILE $HOME/hledger/main.journal
 {{- end -}}
 
-{{- if eq .chezmoi.config.data.machineName "epam-laptop" -}}
+{{- if eq .machineName "epam-laptop" -}}
 # NVM settings
 set -gx NVM_DIR $HOME/.nvm
 
