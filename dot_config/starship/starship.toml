@@ -18,7 +18,9 @@ symbol = ' '
 disabled = true
 
 [time]
-disabled = true
+disabled = false
+format = '[$time]($style) '
+#format = '🕙 [$time]($style) '
 
 [cmd_duration]
 disabled = true
