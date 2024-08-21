@@ -1,11 +1,15 @@
 {
+    "assistant": {
+        "default_model": {
+            "provider": "copilot_chat",
+            "model": "gpt-4o"
+        },
+        "version": "2"
+    },
     "vim_mode": true,
+    "relative_line_numbers": true,
     "theme": "Catppuccin Mocha",
     "tab_size": 4,
-    "telemetry": {
-        "metrics": false,
-        "diagnostics": false
-    },
     "buffer_font_size": 18,
     "buffer_font_family": "Iosevka Nerd Font Mono",
     "preferred_line_length": 130,
@@ -17,5 +21,9 @@
     "terminal": {
         "font_family": "Iosevka Nerd Font Mono",
         "font_size": 18
+    },
+    "telemetry": {
+        "metrics": false,
+        "diagnostics": false
     }
 }
