@@ -1,7 +1,8 @@
 local wezterm = require 'wezterm'
 
 return {
-    font = wezterm.font({ family = "Iosevka Nerd Font Mono", weight = "Regular" }),
+    font = wezterm.font({ family = "IosevkaTerm Nerd Font Mono", weight = "Regular" }),
+
     font_size = 18,
     initial_rows = 40,
     initial_cols = 150,
