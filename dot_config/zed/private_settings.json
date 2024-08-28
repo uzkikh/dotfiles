@@ -11,7 +11,7 @@
     "theme": "Catppuccin Mocha",
     "tab_size": 4,
     "buffer_font_size": 18,
-    "buffer_font_family": "Iosevka Nerd Font Mono",
+    "buffer_font_family": "IosevkaTerm Nerd Font Mono",
     "preferred_line_length": 130,
     "soft_wrap": "preferred_line_length",
     "autosave": "on_focus_change",
@@ -19,7 +19,7 @@
     "remove_trailing_whitespace_on_save": true,
     "show_whitespaces": "selection",
     "terminal": {
-        "font_family": "Iosevka Nerd Font Mono",
+        "font_family": "IosevkaTerm Nerd Font Mono",
         "font_size": 18
     },
     "telemetry": {
