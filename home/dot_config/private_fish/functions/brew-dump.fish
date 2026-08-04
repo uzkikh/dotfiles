@@ -69,7 +69,12 @@ function brew-dump -d "refresh the Brewfile for this machine's chezmoi profile"
     # same set of packages. The flags are valid and harmless in themselves;
     # only the churn between machines is a nuisance. Report it and let the
     # owner decide rather than rewriting the dump behind their back.
-    set -l per_entry (grep -E '^(brew|cask) .*, trusted: true$' $out | string replace -r '^(?:brew|cask) "([^"]+)".*' '$1')
+    #
+    # Formulae and casks are collected apart because `brew untrust` needs to be
+    # told which it is -- a bare name is rejected, and --formula and --cask
+    # cannot share one invocation.
+    set -l trusted_formulae (grep -E '^brew .*, trusted: true$' $out | string replace -r '^brew "([^"]+)".*' '$1')
+    set -l trusted_casks (grep -E '^cask .*, trusted: true$' $out | string replace -r '^cask "([^"]+)".*' '$1')
 
     # Compare as sets: a dump reorders everything, so a plain diff buries the
     # real changes in noise.
@@ -95,13 +100,24 @@ function brew-dump -d "refresh the Brewfile for this machine's chezmoi profile"
         set_color red; echo "  - $l"; set_color normal
     end
 
-    if test (count $per_entry) -gt 0
+    if test (count $trusted_formulae) -gt 0 -o (count $trusted_casks) -gt 0
+        # An entry is user/repo/name, so its tap is the first two components.
+        # Anything shorter is not from a tap and cannot be normalised this way.
+        set -l taps
+        for e in $trusted_formulae $trusted_casks
+            set -l p (string split '/' $e)
+            if test (count $p) -ge 3
+                contains -- "$p[1]/$p[2]" $taps; or set -a taps "$p[1]/$p[2]"
+            end
+        end
+
         set_color yellow
         echo "  these entries carry a per-entry trusted: true, because they were trusted"
         echo "  individually rather than by tap. Harmless, but another machine's dump will"
         echo "  drop the flags again. Normalise with:"
-        echo "    brew untrust $per_entry"
-        echo "    brew trust --tap <their taps>"
+        test (count $trusted_formulae) -gt 0; and echo "    brew untrust --formula $trusted_formulae"
+        test (count $trusted_casks) -gt 0; and echo "    brew untrust --cask $trusted_casks"
+        test (count $taps) -gt 0; and echo "    brew trust --tap $taps"
         set_color normal
     end
 
