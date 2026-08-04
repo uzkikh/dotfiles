@@ -1,0 +1,48 @@
+{{- /*
+   promptStringOnce, not promptChoiceOnce, on purpose. The choice widget
+   pre-fills its field with the option list and can hand back the first option
+   when the typed answer is not accepted -- a mistyped answer then silently
+   selects "personal" and installs the personal package set on a work machine.
+   A plain string field starts empty, so anything unexpected reaches the check
+   below and stops the install with a readable message instead.
+*/ -}}
+{{- /*
+   Checked before the prompts on purpose: this fires at `chezmoi init`, which is
+   earlier than any script and earlier than Homebrew's installer asking for a
+   sudo password, and there is no point asking two questions before rejecting
+   the run. `chezmoi apply` and `status` are unaffected -- the config template
+   is only evaluated at init.
+*/ -}}
+{{- if not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/key.txt")) -}}
+{{-   fail "no age key at ~/.config/chezmoi/key.txt: the package lists are encrypted and nothing can be installed without it. Copy it from 1Password or from a machine that already works, chmod 600, then run chezmoi init again." -}}
+{{- end -}}
+{{- $choices := list "personal" "work-s" "work-e" -}}
+{{- $profile := promptStringOnce . "profile" (printf "Machine profile (%s)" (join "/" $choices)) -}}
+{{- if not (has $profile $choices) -}}
+{{-   fail (printf "unknown profile %q, expected one of %v" $profile $choices) -}}
+{{- end -}}
+{{- $email := promptStringOnce . "email" "Git email address" -}}
+
+{{/*
+   encryption must stay a TOP-LEVEL key, above every table header. Appended at
+   the end of this file it would land inside [edit]; chezmoi does not reject
+   that, it only warns and encrypts anyway -- so a round-trip test still passes
+   and the mistake goes unnoticed.
+
+   The recipient is a public key and is meant to be readable here. The private
+   half lives at ~/.config/chezmoi/key.txt, outside this repository, and is
+   placed by hand on each machine.
+*/ -}}
+encryption = "age"
+
+[age]
+    identity  = "~/.config/chezmoi/key.txt"
+    recipient = "age10qqg5jhgr92xupuu0empq5guvd4zgv3aena4jcldhc0l2pt7r4ys8gwjxu"
+
+[data]
+name    = "Ivan Uzkikh"
+email   = {{ $email | quote }}
+profile = {{ $profile | quote }}
+
+[edit]
+command = "nvim"

@@ -1,0 +1,87 @@
+{{- $files := dict "personal" "Brewfile.age" "work-s" "Brewfile-work-s.age" "work-e" "Brewfile-work-e.age" -}}
+{{- $bf := index $files .profile -}}
+{{- if not $bf -}}
+{{-   fail (printf "no Brewfile mapped for profile %q" .profile) -}}
+{{- end -}}
+#!/bin/bash
+# Runs first, before Homebrew is installed and before a single file is written.
+# The profile is answered once at `chezmoi init` and drives which packages land
+# on this machine, so it has to be confirmed before anything asks for a sudo
+# password -- not several hundred packages later.
+#
+# run_once_ keyed on rendered content: the profile is baked into this text, so
+# changing the profile makes it ask again, while a second apply with the same
+# profile stays quiet.
+
+set -uo pipefail
+
+# Redirection order matters: 2>/dev/null must come first, otherwise bash prints
+# "/dev/tty: Device not configured" to the not-yet-redirected stderr when there
+# is no controlling terminal.
+if : 2>/dev/null < /dev/tty; then
+    tty=/dev/tty
+else
+    tty=""
+fi
+
+# chezmoi captures a script's stdout, and how it wires stdin and stderr differs
+# between `apply` and `init --apply`. /dev/tty is the same terminal in both.
+cat > "${tty:-/dev/stderr}" <<BANNER
+
+  ============================================================
+   chezmoi profile : {{ .profile }}
+   packages from   : {{ $bf }}
+   git email       : {{ .email }}
+  ============================================================
+
+BANNER
+
+# The package lists are age-encrypted, but nothing in the source state is, so a
+# machine without the key sails through the entire apply and finishes with zero
+# packages installed and no error anywhere. This gate is what turns that silence
+# into a stop.
+#
+# It must sit ABOVE the early exit below: without a terminal is exactly the case
+# it exists for. It deliberately breaks the rule that an unattended install
+# never blocks -- an install that cannot read its own package list has nothing
+# useful left to do.
+#
+# A real decryption rather than a test for the file, so a key left over from a
+# previous rotation is caught too. CHEZMOI_EXECUTABLE because chezmoi does not
+# put itself on its scripts' PATH; workingTree because a script's working
+# directory is the destination dir, where a bare filename never resolves.
+if ! "${CHEZMOI_EXECUTABLE:-chezmoi}" decrypt < "{{ .chezmoi.workingTree }}/{{ $bf }}" > /dev/null; then
+    cat > "${tty:-/dev/stderr}" <<'KEYMISSING'
+  Cannot decrypt the package list above.
+
+  Put the age private key at ~/.config/chezmoi/key.txt, chmod 600, and run
+  `chezmoi apply` again. It is in 1Password, or on any machine already set up.
+
+KEYMISSING
+    # Non-zero on purpose: chezmoi records script state only on success, so the
+    # check comes back on the next apply instead of being skipped forever.
+    exit 1
+fi
+
+# No controlling terminal (CI, ssh without a tty, a wrapper script): the banner
+# above has to be enough, blocking an unattended install would be worse.
+[ -n "$tty" ] || exit 0
+
+printf '  Continue with this profile? [y/N] ' > "$tty"
+read -r reply < "$tty"
+case "$reply" in
+    [yY] | [yY][eE][sS]) ;;
+    *)
+        cat > "$tty" <<'ABORT'
+
+  Aborted, nothing installed. To choose another profile:
+    chezmoi init --promptString "Machine profile (personal/work-s/work-e)=<profile>"
+    chezmoi apply
+
+ABORT
+        # Non-zero stops apply here: no Homebrew, no dotfiles, no packages.
+        # chezmoi records script state only on success, so the question comes
+        # back on the next apply.
+        exit 1
+        ;;
+esac

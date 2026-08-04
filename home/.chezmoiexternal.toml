@@ -1,0 +1,47 @@
+# Not a template: nothing here needs chezmoi data. Restore the .tmpl extension
+# if an external ever has to depend on the profile.
+
+# One archive instead of four separate file entries. exact = true makes chezmoi
+# the sole owner of this directory: stale themes are cleaned up on refresh, but
+# a theme dropped in by hand will be deleted too.
+# stripComponents = 2 matches the archive layout (bat-main/themes/*.tmTheme).
+# format is required because the codeload redirect drops the extension.
+[".config/bat/themes"]
+    type = "archive"
+    url = "https://github.com/catppuccin/bat/archive/main.tar.gz"
+    format = "tar.gz"
+    exact = true
+    stripComponents = 2
+    include = ["*/themes/**"]
+    refreshPeriod = "168h"
+
+# A single file from a different repo, no archive involved.
+[".config/kitty/Catppuccin-Mocha.conf"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/catppuccin/kitty/main/themes/mocha.conf"
+    refreshPeriod = "168h"
+
+# tmux plugins as git-repo externals: clone when missing, git pull when present.
+# Replaces run_once_install-tpm.sh and removes the dependency on tmux existing
+# at apply time.
+[".config/tmux/plugins/tpm"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tpm.git"
+    refreshPeriod = "168h"
+
+[".config/tmux/plugins/tmux-sensible"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-sensible.git"
+    refreshPeriod = "168h"
+
+[".config/tmux/plugins/tmux-yank"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-yank.git"
+    refreshPeriod = "168h"
+
+# Pinned: tmux.conf is written against the v2 API (@catppuccin_* options).
+# The narrowed refspec makes git pull a no-op here, so no refreshPeriod.
+[".config/tmux/plugins/catppuccin/tmux"]
+    type = "git-repo"
+    url = "https://github.com/catppuccin/tmux.git"
+    clone.args = ["--branch", "v2.1.3", "--depth", "1"]

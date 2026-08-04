@@ -1,0 +1,9 @@
+# Leftovers from the TPM era, removed once every machine has applied this.
+# NOTE: this runs on every apply, not once. Drop these lines after all three
+# machines have been through an apply, otherwise a directory with one of these
+# names can never exist again.
+# catppuccin/tmux is NOT listed here: chezmoi refuses a path that is both
+# removed and declared as an external ("inconsistent state").
+.config/tmux/plugins/tmux
+.config/tmux/plugins/tmux-resurrect
+.config/tmux/plugins/tmux-continuum

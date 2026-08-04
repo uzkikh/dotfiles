@@ -1,0 +1,23 @@
+#!/bin/bash
+# Same trick as the brew script: the hash below ties this script's run_onchange_
+# state to fish_plugins, which chezmoi would otherwise never notice changing.
+# fish_plugins hash: {{ include "dot_config/private_fish/fish_plugins" | sha256sum }}
+
+set -uo pipefail
+
+# Not inherited from ~/.zprofile: chezmoi may have started before brew existed.
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+if ! command -v fish >/dev/null 2>&1; then
+    echo "fish not found, skipping fisher; rerun apply once brew bundle succeeds." >&2
+    exit 0
+fi
+
+# fisher comes from both Brewfiles, so no curl bootstrap is needed. It reads
+# ~/.config/fish/fish_plugins, which chezmoi itself lays down -- that is why
+# this cannot move to the before_ phase.
+fish -c 'fisher update'

@@ -1,0 +1,14 @@
+# Plans and working notes: not for publication.
+docs/
+
+# Claude Code local state: machine-specific, not published.
+.claude/settings.local.json
+
+# Decrypted Brewfiles. Only the .age files belong in the repository; these names
+# are what `brew bundle dump` and an ad-hoc `chezmoi decrypt >` would produce,
+# and either one putting plaintext back under version control is the whole
+# failure this encryption exists to prevent. The patterns are exact names, so
+# they do not shadow the .age files.
+/Brewfile
+/Brewfile-work-s
+/Brewfile-work-e

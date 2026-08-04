@@ -1,0 +1,101 @@
+{{- $files := dict "personal" "Brewfile.age" "work-s" "Brewfile-work-s.age" "work-e" "Brewfile-work-e.age" -}}
+{{- $bf := index $files .profile -}}
+{{- if not $bf -}}
+{{-   fail (printf "no Brewfile mapped for profile %q" .profile) -}}
+{{- end -}}
+#!/bin/bash
+# The hash below is what makes this run_onchange_ script re-run: chezmoi keys
+# script state on the rendered content, and the Brewfile itself is not part of
+# it. Editing the Brewfile changes this line, which changes the hash.
+# It must be computed over the SAME file the profile selects, otherwise a work
+# machine would reinstall from the personal Brewfile and never notice edits to
+# its own.
+# `include` reads the file raw and needs no key, so this works on a machine that
+# cannot decrypt. age emits fresh ciphertext on every encrypt, which is why
+# brew-dump only rewrites a .age file when the plaintext actually differs --
+# otherwise every dump would churn this hash and reinstall everything.
+# {{ $bf }} hash: {{ include (printf "../%s" $bf) | sha256sum }}
+
+set -uo pipefail
+
+# chezmoi may have started before Homebrew existed, so this process does not
+# inherit brew's PATH from ~/.zprofile.
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# .chezmoiroot puts the source at <repo>/home, but the Brewfiles live at the
+# repo root, which is what workingTree points to.
+brewfile="{{ .chezmoi.workingTree }}/{{ $bf }}"
+
+# Reminder of which Brewfile is in play. The profile was confirmed much earlier,
+# by run_once_before_0-confirm-profile.sh, and a long install scrolls that far
+# out of sight. Straight to the terminal: chezmoi captures a script's stdout,
+# and how it wires stderr differs between `apply` and `init --apply`.
+# Redirection order matters: 2>/dev/null must come first, otherwise bash prints
+# "/dev/tty: Device not configured" to the not-yet-redirected stderr when there
+# is no controlling terminal.
+if : 2>/dev/null < /dev/tty; then
+    tty=/dev/tty
+else
+    tty=/dev/stderr
+fi
+
+cat > "$tty" <<BANNER
+
+  ============================================================
+   chezmoi profile : {{ .profile }}
+   installing from : {{ $bf }}
+  ============================================================
+
+BANNER
+
+# chezmoi does not put itself on the PATH it hands its scripts -- on a fresh
+# machine the installer runs it as ./bin/chezmoi -- but it does export
+# CHEZMOI_EXECUTABLE, in the before_ and after_ phases alike. The template
+# function {{ "{{ .chezmoi.executable }}" }} cannot be used instead: it bakes an
+# absolute path into the rendered text, and that text is the run_onchange_ state
+# key. The path changes once packages are installed (~/bin/chezmoi becomes
+# /opt/homebrew/bin/chezmoi), which would reinstall every entry on the next apply.
+chezmoi_bin="${CHEZMOI_EXECUTABLE:-chezmoi}"
+rerun="chezmoi decrypt < $brewfile | brew bundle --no-upgrade --file=-"
+
+if ! command -v brew >/dev/null 2>&1; then
+    echo "!! brew bundle FAILED: brew not on PATH; rerun by hand: $rerun" >&2
+    exit 0
+fi
+
+# --no-upgrade keeps this strictly additive: install what is missing, never
+# touch what already works. Without it `brew bundle` also runs `brew upgrade` on
+# every outdated entry, so adding one tool to the Brewfile would drag in
+# unrelated version bumps on the next apply. Upgrading is the `update` fish
+# function's job. (brew install may still pull a newer version when a
+# dependency requires it -- the flag removes the planned upgrade, not every one.)
+#
+# Exits 0 even on failure, by design. A non-zero exit aborts chezmoi apply and
+# the fisher script queued after this one would never run at all. mas entries
+# fail whenever the App Store is not signed in, which is the normal state on a
+# work machine.
+#
+# The `!! brew bundle FAILED` markers are therefore the failure signal -- there
+# are three of them, one per reason, and the exit code is 0 in all three cases.
+# `brew bundle check` cannot replace them: by default it counts merely *outdated*
+# packages as unsatisfied (--no-upgrade narrows it to missing ones), and even
+# then it reports the mas entries this script deliberately tolerates.
+#
+# Decryption is a separate stage from installation on purpose. Folded into one
+# pipeline, a missing key would surface as "brew bundle failed" and send the
+# owner looking at packages. The plaintext never reaches the disk: it lives in
+# this variable for the duration of the install and nowhere else.
+if ! brewtext=$("$chezmoi_bin" decrypt < "$brewfile"); then
+    echo "!! brew bundle FAILED: cannot decrypt $brewfile -- is ~/.config/chezmoi/key.txt in place?" >&2
+    exit 0
+fi
+
+if ! printf '%s\n' "$brewtext" | brew bundle --no-upgrade --file=-; then
+    echo "!! brew bundle FAILED, rerun by hand: $rerun" >&2
+fi
+
+exit 0

@@ -1,0 +1,43 @@
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+[core]
+    excludesFile = {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}.gitignore
+[push]
+    default = simple
+    autoSetupRemote = true
+    followTags = true
+[pull]
+    rebase = true
+[fetch]
+    all = true
+    prune = true
+    pruneTags = true
+[log]
+    date = iso
+[branch]
+    sort = -committerdate
+[diff]
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+    #external = difft
+[init]
+    defaultBranch = main
+[help]
+    autocorrect = prompt
+[commit]
+    verbose = true
+[rerere]
+    enabled = true
+    autoupdate = true
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+# Must stay last: git applies an include where it appears, so a [user] section
+# above would win. Keeps the dotfiles repo attributed to a GitHub noreply
+# address instead of whatever work email this machine is configured with.
+[includeIf "gitdir:~/.local/share/chezmoi/"]
+    path = ~/.config/git/dotfiles.inc
