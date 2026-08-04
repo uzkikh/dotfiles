@@ -14,7 +14,12 @@ fi
 
 if ! command -v fish >/dev/null 2>&1; then
     echo "fish not found, skipping fisher; rerun apply once brew bundle succeeds." >&2
-    exit 0
+    # Non-zero on purpose, and it is the difference between that advice being
+    # true and being a lie: chezmoi records script state only on success, so
+    # exiting 0 here would mark this as done and no later apply would ever run
+    # fisher -- not even once fish exists. Aborting apply costs nothing, because
+    # the only script after this one also needs fish.
+    exit 1
 fi
 
 # fisher comes from both Brewfiles, so no curl bootstrap is needed. It reads

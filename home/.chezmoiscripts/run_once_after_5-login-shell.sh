@@ -24,7 +24,11 @@ fi
 fish_path="$(command -v fish || true)"
 if [ -z "$fish_path" ]; then
     echo "  fish not installed, leaving the login shell alone." > "$tty"
-    exit 0
+    # Non-zero for the same reason as the no-terminal branch below: this is a
+    # skipped prerequisite, not a completed job. Exiting 0 would record the
+    # script as done and the login shell would stay zsh forever, however many
+    # applies followed.
+    exit 1
 fi
 
 # $SHELL is the shell that launched this script, not the configured login

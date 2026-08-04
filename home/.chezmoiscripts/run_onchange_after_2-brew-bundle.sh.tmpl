@@ -60,7 +60,13 @@ BANNER
 # key. The path changes once packages are installed (~/bin/chezmoi becomes
 # /opt/homebrew/bin/chezmoi), which would reinstall every entry on the next apply.
 chezmoi_bin="${CHEZMOI_EXECUTABLE:-chezmoi}"
-rerun="chezmoi decrypt < $brewfile | brew bundle --no-upgrade --file=-"
+
+# The hint below names $chezmoi_bin rather than a bare `chezmoi`, because of
+# where it is read: on a fresh machine whose brew bundle just failed, the
+# brew-installed chezmoi is precisely one of the packages that did not arrive.
+# CHEZMOI_EXECUTABLE points at the binary the installer dropped, which is the
+# one that works there.
+rerun="$chezmoi_bin decrypt < $brewfile | brew bundle --no-upgrade --file=-"
 
 if ! command -v brew >/dev/null 2>&1; then
     echo "!! brew bundle FAILED: brew not on PATH; rerun by hand: $rerun" >&2
