@@ -137,6 +137,17 @@ string finds any of them. The first and third print the exact command to repeat;
 the second means the key is missing or no longer matches, and no amount of
 rerunning helps until that is fixed.
 
+**Open a new terminal before repeating the command.** Homebrew puts itself on
+`PATH` through `~/.zprofile` and `/etc/paths.d/homebrew`, both of which are read
+when a login shell starts — so the session that ran the install, having started
+before Homebrew existed, does not have `brew` at all. In that session use
+`eval "$(/opt/homebrew/bin/brew shellenv)"` instead.
+
+Note also that a fetch failure takes everything with it: `brew bundle` fetches
+the whole list up front and gives up on the first download that fails, before
+installing anything. One flaky download therefore means zero packages, not one
+missing package — which usually means the repeat command simply succeeds.
+
 ### App Store
 
 The `personal` profile pulls 18 App Store apps through `mas`, which requires
