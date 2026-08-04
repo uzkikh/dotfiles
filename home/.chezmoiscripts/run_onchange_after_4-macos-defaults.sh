@@ -25,6 +25,9 @@ defaults write com.apple.dock "autohide" -bool "true" && killall Dock
 # Set dock icon size of 40 pixels
 defaults write com.apple.dock "tilesize" -int "40" && killall Dock
 
+# Hide all icons on desktop
+defaults write com.apple.finder "CreateDesktop" -bool "false" && killall Finder
+
 # Screenshot location.
 # defaults write com.apple.screencapture location ~/Desktop/Screenshots
 # killall SystemUIServer
