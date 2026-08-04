@@ -100,8 +100,22 @@ if ! brewtext=$("$chezmoi_bin" decrypt < "$brewfile"); then
     exit 0
 fi
 
+# Retried once on purpose. `brew bundle` fetches the entire list before
+# installing any of it and gives up on the first download that fails
+# (bundle/installer.rb), with no flag to loosen that -- so one flaky download
+# leaves zero packages installed rather than one package missing. Seen for real:
+# a partial transfer of a single cask took all 41 entries with it. That failure
+# mode is transient and almost always clears on a second attempt.
+#
+# The retry is unconditional rather than conditional on the message, because
+# parsing brew's output to classify the failure is more fragile than the retry
+# is expensive: on a machine where everything is already installed the second
+# pass is a fast run of `Using` lines.
 if ! printf '%s\n' "$brewtext" | brew bundle --no-upgrade --file=-; then
-    echo "!! brew bundle FAILED, rerun by hand: $rerun" >&2
+    echo "   brew bundle failed, retrying once before giving up..." > "$tty"
+    if ! printf '%s\n' "$brewtext" | brew bundle --no-upgrade --file=-; then
+        echo "!! brew bundle FAILED, rerun by hand: $rerun" >&2
+    fi
 fi
 
 exit 0

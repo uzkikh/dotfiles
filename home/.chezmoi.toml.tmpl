@@ -14,7 +14,11 @@
    is only evaluated at init.
 */ -}}
 {{- if not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/key.txt")) -}}
-{{-   fail "no age key at ~/.config/chezmoi/key.txt: the package lists are encrypted and nothing can be installed without it. Copy it from 1Password or from a machine that already works, chmod 600, then run chezmoi init again." -}}
+{{- /*
+     Kept short: Go's template engine prints the failing action and then the
+     error, so every character here reaches the screen twice.
+*/ -}}
+{{-   fail "no age key at ~/.config/chezmoi/key.txt -- copy it from 1Password, chmod 600, rerun. See README step 2." -}}
 {{- end -}}
 {{- $choices := list "personal" "work-s" "work-e" -}}
 {{- $profile := promptStringOnce . "profile" (printf "Machine profile (%s)" (join "/" $choices)) -}}
