@@ -61,20 +61,23 @@ function brew-dump -d "refresh the Brewfile for this machine's chezmoi profile"
         return 1
     end
 
-    # dump appends `, trusted: true` to a brew/cask line when that individual
-    # entry was trusted (`brew trust --formula x/y/z`) rather than its whole
-    # tap (`brew trust --tap x/y`) -- and Homebrew's own error message suggests
-    # the per-entry form. Trust granularity is machine-local state that never
-    # reaches the repository, so two machines produce different text for the
-    # same set of packages. The flags are valid and harmless in themselves;
-    # only the churn between machines is a nuisance. Report it and let the
-    # owner decide rather than rewriting the dump behind their back.
+    # Strip per-entry trust flags. `brew install user/tap/name` trusts that
+    # entry as a side effect -- cmd/install.rb calls trust_fully_qualified_items!
+    # on whatever it was handed -- and `brew bundle` installs by full name
+    # (bundle/cask.rb, bundle/brew.rb), so every machine that installs from a
+    # Brewfile grows flags the Brewfile never asked for. Dump then writes them
+    # back out, and each machine disagrees with the last.
     #
-    # Formulae and casks are collected apart because `brew untrust` needs to be
-    # told which it is -- a bare name is rejected, and --formula and --cask
-    # cannot share one invocation.
-    set -l trusted_formulae (grep -E '^brew .*, trusted: true$' $out | string replace -r '^brew "([^"]+)".*' '$1')
-    set -l trusted_casks (grep -E '^cask .*, trusted: true$' $out | string replace -r '^cask "([^"]+)".*' '$1')
+    # They are a consequence of installing, not a requirement for it: what makes
+    # a fresh machine work is `trusted: true` on the `tap` lines, which
+    # bundle/installer.rb applies before anything is fetched. So the flags carry
+    # no information the repository needs, and the fix is to stop treating them
+    # as content rather than to normalise trust by hand on every machine.
+    #
+    # Anchored at end of line because dump appends the flag last, after options
+    # like `restart_service: :changed`. Only brew/cask lines: the identical text
+    # on a `tap` line is the load-bearing one and must survive.
+    sed -i '' -E '/^(brew|cask) /s/, trusted: true$//' $out
 
     # Compare as sets: a dump reorders everything, so a plain diff buries the
     # real changes in noise.
@@ -98,27 +101,6 @@ function brew-dump -d "refresh the Brewfile for this machine's chezmoi profile"
     end
     for l in $removed
         set_color red; echo "  - $l"; set_color normal
-    end
-
-    if test (count $trusted_formulae) -gt 0 -o (count $trusted_casks) -gt 0
-        # An entry is user/repo/name, so its tap is the first two components.
-        # Anything shorter is not from a tap and cannot be normalised this way.
-        set -l taps
-        for e in $trusted_formulae $trusted_casks
-            set -l p (string split '/' $e)
-            if test (count $p) -ge 3
-                contains -- "$p[1]/$p[2]" $taps; or set -a taps "$p[1]/$p[2]"
-            end
-        end
-
-        set_color yellow
-        echo "  these entries carry a per-entry trusted: true, because they were trusted"
-        echo "  individually rather than by tap. Harmless, but another machine's dump will"
-        echo "  drop the flags again. Normalise with:"
-        test (count $trusted_formulae) -gt 0; and echo "    brew untrust --formula $trusted_formulae"
-        test (count $trusted_casks) -gt 0; and echo "    brew untrust --cask $trusted_casks"
-        test (count $taps) -gt 0; and echo "    brew trust --tap $taps"
-        set_color normal
     end
 
     read -l -P "Write $name? [y/N] " reply

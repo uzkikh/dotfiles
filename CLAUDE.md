@@ -67,7 +67,16 @@ diff <(git show HEAD:Brewfile.age | chezmoi decrypt | grep -E '^(tap|brew|cask|m
 
 It also refuses when the file will not decrypt, and that check is deliberately the *first* thing it does. A failed decryption yields an empty list, which would render as "every entry added" and, answered with `y`, overwrite the `.age` with content that was never compared against anything.
 
-It never rewrites the dump. The one thing it reports and leaves alone is **`, trusted: true` on a `brew`/`cask` line**: `dump` appends that when the individual entry was trusted (`brew trust --formula x/y/z`) rather than its whole tap (`brew trust --tap x/y`), and Homebrew's own error message nudges you toward the per-entry form. Trust granularity is machine-local state that never reaches the repository, so two machines produce different text for the same packages. The flags are valid and harmless; the fix for the churn belongs on the machine — `brew untrust --formula <names>` and/or `brew untrust --cask <names>`, then `brew trust --tap <taps>`. **`brew untrust` rejects a bare name**: it needs `--tap`, `--formula`, `--cask` or `--command` to know what kind of entry it is being handed, and formulae and casks cannot share one invocation. `brew-dump` therefore keeps the two apart and prints the taps it derived from the entry names rather than a placeholder.
+**`brew-dump` strips `, trusted: true` from `brew`/`cask` lines, and must keep doing so.** Every machine that installs from a Brewfile grows those flags by itself, so without the strip no two machines ever agree on the file. The chain, verified in the Homebrew source:
+
+- `bundle/cask.rb` and `bundle/brew.rb` install by **fully-qualified name**: `Bundle.brew("install", "--cask", full_name)`;
+- `cmd/install.rb` calls `Homebrew::Trust.trust_fully_qualified_items!` on whatever it was handed;
+- that records **per-entry** trust for any item from a non-official tap (`trust.rb`), printing `Trusted cask user/tap/name`;
+- `dump` then appends `, trusted: true` to exactly those entries.
+
+Observed on a clean VM: `trust.json` came back with **both** `trustedtaps` and `trustedcasks` after a plain bootstrap, with nothing done by hand.
+
+The flags are a *consequence* of installing, never a requirement for it. What makes a fresh machine work is `trusted: true` on the **`tap`** lines, which `bundle/installer.rb` applies before anything is fetched — those must survive, and the strip is anchored to `brew`/`cask` lines only. Trying to fix this on the machine instead (`brew untrust --cask …`, then `brew trust --tap …`) works but has to be repeated after every install, on every machine, forever.
 
 **The Brewfiles carry no hand-written comments, deliberately.** `brew bundle dump` regenerates them from installed state and silently drops anything typed in by hand, so a note added there survives exactly until the next dump — and on armored ciphertext no diff will show you it went. The files are therefore kept byte-identical to what `dump` produces (the `#` description above each entry is `dump`'s own), and anything worth saying about a package is written here instead.
 
