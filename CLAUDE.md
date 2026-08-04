@@ -163,7 +163,9 @@ The hash must be computed over the *same* file the profile selects. A hardcoded 
 !! brew bundle FAILED, rerun by hand: ...
 ```
 
-Those markers are the failure signal, because the exit code is always 0 by design. All three share the substring `brew bundle FAILED`, so one grep finds any of them — keep that property when editing the text. Decryption is a separate stage from installation for the same reason there are separate markers: folded into one pipeline, a missing key would surface as "brew bundle failed" and send you looking at packages.
+Those markers are the failure signal, because the exit code is always 0 by design. All three share the substring `brew bundle FAILED`, so one grep finds any of them — keep that property when editing the text.
+
+The rerun command they print names `$CHEZMOI_EXECUTABLE`, never a bare `chezmoi`: on the machine where the marker is actually read — a fresh one whose `brew bundle` just failed — the brew-installed chezmoi is one of the packages that did not arrive. Observed on a clean VM, that variable is an **absolute** path, `~/.config/chezmoi/bin/chezmoi`, so the hint can be pasted from any directory. (It is not `~/bin/chezmoi`, and it is not relative to the directory the installer was run from — both are easy assumptions to make from the installer's `installed bin/chezmoi` line.) Decryption is a separate stage from installation for the same reason there are separate markers: folded into one pipeline, a missing key would surface as "brew bundle failed" and send you looking at packages.
 
 `brew bundle check` is the obvious alternative and does not work here. By default it treats an **outdated** package as unsatisfied, not just a missing one — an installed-but-stale `pkgconf` yields `Formula pkgconf needs to be installed or updated` and a non-zero exit. `--no-upgrade` narrows it to genuinely missing packages, but even then it flags the App Store entries whose failure this design deliberately tolerates. As a gate it would be red on a perfectly healthy machine.
 
