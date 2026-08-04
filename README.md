@@ -106,6 +106,32 @@ That is the whole install. Open a new terminal and fish is the login shell.
 
 ## Notes
 
+### Pushing changes back
+
+`chezmoi init uzkikh` clones over HTTPS, anonymously — that is exactly what
+keeps the one-command install free of any sign-in. Pushing needs credentials,
+which the install deliberately never asks for. The least troublesome way to add
+them:
+
+```sh
+brew install gh
+gh auth login        # HTTPS, browser sign-in
+```
+
+That sets up a credential helper for the remote `init` already wrote, so nothing
+else has to change.
+
+SSH works as well, but costs something on every machine: `chezmoi init` always
+writes the HTTPS remote, so `git remote set-url` has to be repeated after every
+fresh install; port 22 is blocked on some networks, which needs a `Port 443`
+block for `ssh.github.com` in `~/.ssh/config`; and `~/.ssh` is deliberately not
+managed here, so that block is hand-written per machine and does not survive a
+reinstall.
+
+The remote URL is machine-local state, like Homebrew's trust store: it never
+travels with the repository, so machines are free to use different transports
+with nothing to reconcile.
+
 ### If the login shell was not changed
 
 Step 8 needs a password, so it is skipped when the apply is not attached to a
