@@ -1,0 +1,72 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "collaboration_panel": {
+    "button": false,
+  },
+  "git_panel": {
+    "show_count_badge": false,
+    "file_icons": true,
+    "tree_view": true,
+    "collapse_untracked_diff": false,
+    "group_by": "status",
+    "sort_by": "path",
+    "status_style": "icon",
+    "dock": "left",
+  },
+  "agent": {
+    "sidebar_side": "right",
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": [],
+  },
+  "project_panel": {
+    "hide_gitignore": false,
+    "dock": "left",
+  },
+  "cursor_blink": true,
+  "icon_theme": "Catppuccin Mocha",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false,
+  },
+  "base_keymap": "JetBrains",
+  "vim_mode": true,
+  "terminal": {
+    "font_size": 20.0,
+    "font_family": "IosevkaTerm Nerd Font",
+  },
+  "buffer_font_family": "Iosevka",
+  "ui_font_size": 18.0,
+  "buffer_font_size": 20.0,
+  "theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha",
+  },
+  "auto_install_extensions": {
+    "ansible": true,
+    "catppuccin": true,
+    "catppuccin-icons": true,
+    "csv": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "fish": true,
+    "helm": true,
+    "html": true,
+    "java":true,
+    "just": true,
+    "log": true,
+    "make": true,
+    "terraform": true,
+    "toml": true,
+    "xml": true,
+  },
+}
