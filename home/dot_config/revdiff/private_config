@@ -1,0 +1,6 @@
+theme = catppuccin-mocha
+wrap = true
+compact = true
+line-numbers = true
+word-diff = true
+vim-motion = true
