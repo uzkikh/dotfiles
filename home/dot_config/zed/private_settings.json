@@ -7,6 +7,8 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "cli_default_open_behavior": "existing_window",
+  "diff_view_style": "unified",
   "collaboration_panel": {
     "button": false,
   },
@@ -53,6 +55,7 @@
   },
   "auto_install_extensions": {
     "ansible": true,
+    "beancount": true,
     "catppuccin": true,
     "catppuccin-icons": true,
     "csv": true,
@@ -65,6 +68,7 @@
     "just": true,
     "log": true,
     "make": true,
+    "plantuml": true,
     "terraform": true,
     "toml": true,
     "xml": true,
