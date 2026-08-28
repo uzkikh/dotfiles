@@ -3,6 +3,7 @@
     email = {{ .email }}
 [core]
     excludesFile = {{ .chezmoi.homeDir }}{{ .chezmoi.pathSeparator }}.gitignore
+    pager = delta
 [push]
     default = simple
     autoSetupRemote = true
@@ -22,7 +23,28 @@
     colorMoved = plain
     mnemonicPrefix = true
     renames = true
-    #external = difft
+[interactive]
+    diffFilter = delta --color-only
+
+# downloaded by .chezmoiexternal.toml
+[include]
+    path = ~/.config/delta/catppuccin.gitconfig
+
+# Kept in a feature, not in [delta]: only a feature list can be overridden with
+# `delta --features=...`, which is how lazygit drops these in its narrow panes.
+[delta]
+    features = catppuccin-mocha terminal-defaults
+
+[delta "terminal-defaults"]
+    side-by-side = true
+    line-numbers = true
+    hyperlinks = true
+    navigate = true
+
+[merge]
+    # delta renders conflicts only with a 3-way style
+    conflictStyle = zdiff3
+
 [init]
     defaultBranch = main
 [help]
@@ -36,6 +58,12 @@
     autoSquash = true
     autoStash = true
     updateRefs = true
+
+# Not a global diff.external: difftastic output is not an applicable patch.
+[alias]
+    dft = -c diff.external=difft -c core.pager=less diff
+    dfts = -c diff.external=difft -c core.pager=less show
+    dftl = -c diff.external=difft -c core.pager=less log -p
 # Must stay last: git applies an include where it appears, so a [user] section
 # above would win. Keeps the dotfiles repo attributed to a GitHub noreply
 # address instead of whatever work email this machine is configured with.

@@ -1,0 +1,18 @@
+git:
+  # cycled with `|`
+  diffRenderers:
+    # --features= drops side-by-side and navigate from ~/.gitconfig
+    - name: delta
+      command: >-
+        delta --dark --paging=never --features=catppuccin-mocha
+        --line-numbers --hyperlinks
+        --hyperlinks-file-link-format=lazygit-edit://{path}:{line}
+    - name: delta side-by-side
+      command: >-
+        delta --dark --paging=never --features=catppuccin-mocha
+        --line-numbers --side-by-side
+    - name: difftastic
+      type: extDiff
+      command: difft --color=always --context={{diffContext}}
+    - name: raw git
+      type: rawGit

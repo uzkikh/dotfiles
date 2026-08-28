@@ -21,6 +21,12 @@
     url = "https://raw.githubusercontent.com/catppuccin/kitty/main/themes/mocha.conf"
     refreshPeriod = "168h"
 
+# Defines the catppuccin-* delta features that ~/.gitconfig selects.
+[".config/delta/catppuccin.gitconfig"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/catppuccin/delta/main/catppuccin.gitconfig"
+    refreshPeriod = "168h"
+
 # tmux plugins as git-repo externals: clone when missing, git pull when present.
 # Replaces run_once_install-tpm.sh and removes the dependency on tmux existing
 # at apply time.
